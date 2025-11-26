@@ -1,0 +1,11 @@
+appId: com.secureterminal.app
+productName: Secure Terminal
+files:
+  - dist/**/*
+  - electron-main/**/*
+  - icons/**/*
+mac:
+  target: dmg
+  category: public.app-category.utilities
+extraMetadata:
+  main: dist/electron-main/main.js
