@@ -1,0 +1,19 @@
+{
+  "name": "secure-terminal-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "electron-main/main.ts",
+  "scripts": {
+    "dev": "electronmon .",
+    "build": "tsc -p tsconfig.json && electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "electron": "^29.3.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.9.1",
+    "electronmon": "^2.0.4",
+    "typescript": "^5.4.5"
+  }
+}

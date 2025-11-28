@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  profileId    String   @unique
+  publicKey    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  conversationsA Conversation[] @relation("UserConversationA")
+  conversationsB Conversation[] @relation("UserConversationB")
+  messagesSent   Message[]       @relation("MessageSender")
+  messagesRecv   Message[]       @relation("MessageRecipient")
+  refreshTokens  RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  userA     User     @relation("UserConversationA", fields: [userAId], references: [id])
+  userAId   String
+  userB     User     @relation("UserConversationB", fields: [userBId], references: [id])
+  userBId   String
+  createdAt DateTime @default(now())
+  messages  Message[]
+
+  @@unique([userAId, userBId])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+  sender         User     @relation("MessageSender", fields: [senderId], references: [id])
+  senderId       String
+  recipient      User     @relation("MessageRecipient", fields: [recipientId], references: [id])
+  recipientId    String
+  ciphertext     String
+  createdAt      DateTime @default(now())
+}
