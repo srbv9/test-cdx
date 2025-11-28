@@ -190,6 +190,19 @@ curl -k https://vendadummydomain.com/api/health
 ```
 
 Set the Electron/Vite renderer to use `https://vendadummydomain.com/api` and `wss://vendadummydomain.com/ws`.
+## AWS EC2 deployment (manual steps)
+1. Provision a small Linux EC2 instance.
+2. Install Docker and docker-compose.
+3. Clone this repo or copy built images to the server.
+4. Configure DNS so `vendadummydomain.com` points to the EC2 public IP.
+5. Install certbot and issue a TLS cert for `api.vendadummydomain.com` or `vendadummydomain.com`.
+6. Update `nginx.conf` to reference the TLS cert and key, ensuring `/api` and `/ws` proxy rules remain.
+7. Set environment variables before `docker-compose up -d`:
+   - `JWT_SECRET`
+   - `DATABASE_URL` (e.g., `file:/app/data/prod.db`)
+   - `ALLOWED_ORIGIN` (Electron app origin)
+8. Start services: `docker-compose up -d --build`.
+9. Verify with `curl https://api.vendadummydomain.com/health` and run a test login via a packaged Electron build.
 
 ## Electron packaging
 - The Electron app loads the built renderer from `frontend/dist` (copy to `desktop/renderer` before `npm run build`).
